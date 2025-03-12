@@ -2,6 +2,15 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+// Define Node interface for type safety
+interface Node {
+  _id: string | ObjectId;
+  text: string;
+  children: Node[];
+  parentId: string | null;
+  createdAt: Date;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -12,8 +21,8 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const nodes = await collection.find({}).toArray();
-      const nodeMap = new Map();
+      const nodes = (await collection.find({}).toArray()) as Node[];
+      const nodeMap = new Map<string, Node>();
 
       // Create a map of all nodes
       nodes.forEach((node) => {
@@ -22,7 +31,7 @@ export default async function handler(
       });
 
       // Build the tree structure
-      const rootNodes = [];
+      const rootNodes: Node[] = [];
       nodes.forEach((node) => {
         if (node.parentId) {
           const parent = nodeMap.get(node.parentId);

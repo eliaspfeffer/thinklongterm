@@ -2,6 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+interface Node {
+  _id: string | ObjectId;
+  text: string;
+  children: Node[];
+  parentId: string | null;
+  createdAt: Date;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

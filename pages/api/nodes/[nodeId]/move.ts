@@ -2,6 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+interface Node {
+  _id: string | ObjectId;
+  text: string;
+  children: Node[];
+  parentId: string | null;
+  createdAt: Date;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -35,9 +43,10 @@ export default async function handler(
       ): Promise<boolean> => {
         if (currentId === targetParentId) return true;
 
-        const node = await collection.findOne({
+        const node = (await collection.findOne({
           _id: new ObjectId(targetParentId),
-        });
+        })) as Node | null;
+
         if (!node || !node.parentId) return false;
 
         return isCircular(currentId, node.parentId);
