@@ -4,10 +4,6 @@
 
 ThinkLongTerm is a decision tree visualization tool that helps you map out complex decisions and their potential outcomes. By visualizing the branching paths of different choices, it enables you to think more strategically about long-term consequences.
 
-## Live Demo
-
-You can check out the project at [thinklongterm.eliaspfeffer.de](https://thinklongterm.eliaspfeffer.de)
-
 ## Features
 
 - **Interactive Decision Tree**: Create and visualize hierarchical decision trees

@@ -21,29 +21,11 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
+      // Alle Nodes aus der Datenbank abrufen
       const nodes = (await collection.find({}).toArray()) as Node[];
-      const nodeMap = new Map<string, Node>();
 
-      // Create a map of all nodes
-      nodes.forEach((node) => {
-        node.children = [];
-        nodeMap.set(node._id.toString(), node);
-      });
-
-      // Build the tree structure
-      const rootNodes: Node[] = [];
-      nodes.forEach((node) => {
-        if (node.parentId) {
-          const parent = nodeMap.get(node.parentId);
-          if (parent) {
-            parent.children.push(node);
-          }
-        } else {
-          rootNodes.push(node);
-        }
-      });
-
-      res.json(rootNodes);
+      // Wir senden alle Nodes zurück, da react-d3-tree diese selbst strukturieren kann
+      res.json(nodes);
     } catch (error) {
       res.status(500).json({ error: "Error fetching nodes" });
     }

@@ -147,13 +147,13 @@ export default function MindMap() {
     });
 
     const isVertical = layout === "vertical";
-    const spacing = isVertical ? 64 : 48;
+    const spacing = isVertical ? 80 : 48;
 
-    // Sort children by creation time (oldest first for vertical layout)
-    const sortedChildren = [...(node.children || [])].sort((a, b) =>
-      isVertical
-        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    // Sort children by creation time
+    const sortedChildren = [...(node.children || [])].sort(
+      (a, b) =>
+        // Always sort so child nodes appear above parent nodes (newer first)
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     return (
@@ -165,8 +165,8 @@ export default function MindMap() {
         }}
         style={{
           position: "relative",
-          marginBottom: isVertical ? "0.5rem" : "1rem",
-          marginRight: isVertical ? "1rem" : "0",
+          marginBottom: isVertical ? "2rem" : "1rem",
+          marginRight: isVertical ? "1.5rem" : "0",
           opacity: isDragging ? 0.5 : 1,
           cursor: "move",
           display: isVertical ? "inline-block" : "block",
@@ -180,29 +180,38 @@ export default function MindMap() {
             gap: "0.5rem",
             marginLeft: isVertical ? "0" : `${level * spacing}px`,
             marginTop: isVertical ? `${level * spacing}px` : "0",
+            position: "relative",
           }}
         >
-          {level > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                ...(isVertical
-                  ? {
-                      left: "50%",
-                      top: `-${spacing / 2}px`,
-                      width: "1px",
-                      height: `${spacing / 2}px`,
-                      transform: "translateX(-50%)",
-                    }
-                  : {
-                      left: `${level * spacing - 32}px`,
-                      top: "50%",
-                      width: "32px",
-                      height: "1px",
-                    }),
-                backgroundColor: "#E5E7EB",
-              }}
-            />
+          {level > 0 && isVertical && (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: `-${spacing / 2}px`,
+                  width: "2px",
+                  height: `${spacing / 2 - 12}px`,
+                  transform: "translateX(-50%)",
+                  backgroundColor: "#64748b",
+                  zIndex: 1,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "-12px",
+                  width: "0",
+                  height: "0",
+                  transform: "translateX(-50%)",
+                  borderLeft: "8px solid transparent",
+                  borderRight: "8px solid transparent",
+                  borderBottom: "12px solid #64748b",
+                  zIndex: 1,
+                }}
+              />
+            </>
           )}
           <div
             style={{
@@ -213,6 +222,10 @@ export default function MindMap() {
               border: isOver ? "2px dashed #3B82F6" : "none",
               borderRadius: "0.5rem",
               padding: isOver ? "2px" : "0",
+              boxShadow:
+                "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+              background: isSelected ? "#3B82F6" : "#F3F4F6",
+              zIndex: 2,
             }}
           >
             <div
@@ -221,14 +234,15 @@ export default function MindMap() {
                 padding: "0.75rem",
                 borderRadius: "0.5rem",
                 cursor: "pointer",
-                backgroundColor: isSelected ? "#3B82F6" : "#F3F4F6",
                 color: isSelected ? "white" : "black",
               }}
               onClick={() => setSelectedNode(isSelected ? null : node._id)}
             >
               {node.text}
             </div>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div
+              style={{ display: "flex", gap: "0.5rem", padding: "0 0.5rem" }}
+            >
               <button
                 onClick={() => {
                   setSelectedNode(node._id);
@@ -241,7 +255,7 @@ export default function MindMap() {
                   alignItems: "center",
                   justifyContent: "center",
                   borderRadius: "50%",
-                  backgroundColor: "#3B82F6",
+                  backgroundColor: isSelected ? "#60a5fa" : "#3B82F6",
                   color: "white",
                   border: "none",
                   cursor: "pointer",
@@ -276,8 +290,9 @@ export default function MindMap() {
         <div
           style={{
             display: isVertical ? "flex" : "block",
-            gap: "1rem",
+            gap: "1.5rem",
             marginLeft: isVertical ? "0" : "0",
+            position: "relative",
           }}
         >
           {sortedChildren.map((child) => (
@@ -295,32 +310,48 @@ export default function MindMap() {
               position: "relative",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                ...(isVertical
-                  ? {
-                      left: "50%",
-                      top: `-${spacing / 2}px`,
-                      width: "1px",
-                      height: `${spacing / 2}px`,
-                      transform: "translateX(-50%)",
-                    }
-                  : {
-                      left: `${(level + 1) * spacing - 32}px`,
-                      top: "50%",
-                      width: "32px",
-                      height: "1px",
-                    }),
-                backgroundColor: "#E5E7EB",
-              }}
-            />
+            {isVertical && (
+              <>
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: `-${spacing / 2}px`,
+                    width: "2px",
+                    height: `${spacing / 2 - 12}px`,
+                    transform: "translateX(-50%)",
+                    backgroundColor: "#64748b",
+                    zIndex: 1,
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "-12px",
+                    width: "0",
+                    height: "0",
+                    transform: "translateX(-50%)",
+                    borderLeft: "8px solid transparent",
+                    borderRight: "8px solid transparent",
+                    borderBottom: "12px solid #64748b",
+                    zIndex: 1,
+                  }}
+                />
+              </>
+            )}
             <div
               style={{
                 display: "flex",
                 gap: "0.5rem",
                 alignItems: "center",
                 minWidth: "200px",
+                boxShadow:
+                  "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+                borderRadius: "0.5rem",
+                padding: "0.25rem",
+                background: "#FFFFFF",
+                zIndex: 2,
               }}
             >
               <input

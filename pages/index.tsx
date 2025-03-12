@@ -1,6 +1,6 @@
 import React from "react";
 import { Inter } from "next/font/google";
-import MindMap from "@/components/MindMap";
+import TreeVisualizer from "@/components/TreeVisualizer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +14,7 @@ export default function Home() {
         <p className="text-center mb-8 text-gray-600">
           Map out the long-term consequences of your actions
         </p>
-        <MindMap />
+        <TreeVisualizer />
       </div>
     </main>
   );
